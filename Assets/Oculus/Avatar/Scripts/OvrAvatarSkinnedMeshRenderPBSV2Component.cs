@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
-using System.Security.Policy;
+using System.Security;
 using Oculus.Avatar;
 
 public class OvrAvatarSkinnedMeshPBSV2RenderComponent : OvrAvatarRenderComponent
