@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class Hand : MonoBehaviour
 {
+    public float RotatorStrength;
     public enum State
     {
         EMPTY,
         TOUCHING,
         HOLDING
     };
-
+    
     public OVRInput.Controller Controller = OVRInput.Controller.LTouch;
     public State mHandState = State.EMPTY;
     public Rigidbody AttachPoint = null;
@@ -26,7 +27,7 @@ public class Hand : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider collider)
+    void OnTriggerStay(Collider collider)
     {
         if (mHandState == State.EMPTY)
         {
@@ -53,13 +54,13 @@ public class Hand : MonoBehaviour
 
     void Update()
     {
+        OVRInput.Update();
+
         switch (mHandState)
         {
             case State.TOUCHING:
-                Debug.Log(OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, Controller));
                 if (mTempJoint == null && OVRInput.Get(OVRInput.Axis1D.Any, Controller) >= 0.5f)
                 {
-
                     mHeldObject.velocity = Vector3.zero;
                     mTempJoint = mHeldObject.gameObject.AddComponent<FixedJoint>();
                     mTempJoint.connectedBody = AttachPoint;
@@ -67,7 +68,7 @@ public class Hand : MonoBehaviour
                 }
                 break;
             case State.HOLDING:
-                if (mTempJoint != null && OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, Controller) < 0.5f)
+                if (mTempJoint != null && OVRInput.Get(OVRInput.Axis1D.Any, Controller) < 0.5f)
                 {
                     Object.DestroyImmediate(mTempJoint);
                     mTempJoint = null;
@@ -81,7 +82,7 @@ public class Hand : MonoBehaviour
     private void throwObject()
     {
         mHeldObject.velocity = OVRInput.GetLocalControllerVelocity(Controller);
-        mHeldObject.angularVelocity = OVRInput.GetLocalControllerAngularVelocity(Controller) * Mathf.Deg2Rad;
+        mHeldObject.angularVelocity = OVRInput.GetLocalControllerAngularVelocity(Controller)*RotatorStrength;
         mHeldObject.maxAngularVelocity = mHeldObject.angularVelocity.magnitude;
     }
 }
