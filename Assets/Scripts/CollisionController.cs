@@ -15,7 +15,7 @@ public class CollisionController : MonoBehaviour
     {
         
     }
-    private void OnTriggerEnter(Collider collision)
+    private void FixedUpdate(Collider collision)
     {
         Rigidbody r = collision.gameObject.GetComponent<Rigidbody>();
         r.AddForce(0.35f * OVRInput.GetLocalControllerAcceleration(OVRInput.Controller.RTouch));
